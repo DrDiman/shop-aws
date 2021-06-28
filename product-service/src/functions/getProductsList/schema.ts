@@ -1,0 +1,53 @@
+export default {
+  definitions: {},
+  $id: "Products",
+  title: "Root",
+  type: "array",
+  default: [],
+  items: {
+    $id: "#root/items",
+    title: "Items",
+    type: "object",
+    required: ["count", "description", "id", "price", "title"],
+    properties: {
+      count: {
+        $id: "#root/items/count",
+        title: "Count",
+        type: "integer",
+        examples: [4],
+        default: 0,
+      },
+      description: {
+        $id: "#root/items/description",
+        title: "Description",
+        type: "string",
+        default: "",
+        examples: ["iPhone 8"],
+        pattern: "^.*$",
+      },
+      id: {
+        $id: "#root/items/id",
+        title: "Id",
+        type: "string",
+        default: "",
+        examples: ["7567ec4b-b10c-48c5-9345-fc73c48a80aa"],
+        pattern: "^.*$",
+      },
+      price: {
+        $id: "#root/items/price",
+        title: "Price",
+        type: "integer",
+        examples: [500],
+        default: 0,
+      },
+      title: {
+        $id: "#root/items/title",
+        title: "Title",
+        type: "string",
+        default: "",
+        examples: ["iPhone 8"],
+        pattern: "^.*$",
+      },
+    },
+  },
+} as const

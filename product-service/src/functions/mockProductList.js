@@ -1,0 +1,58 @@
+export const mockProductList = [
+  {
+    count: 4,
+    description: "iPhone 8",
+    id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
+    price: 500,
+    title: "iPhone 8",
+  },
+  {
+    count: 6,
+    description: "iPhone 10",
+    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a0",
+    price: 600,
+    title: "iPhone 10",
+  },
+  {
+    count: 7,
+    description: "iPhone 11",
+    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a2",
+    price: 700,
+    title: "iPhone 11",
+  },
+  {
+    count: 12,
+    description: "iPhone 12",
+    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
+    price: 1500,
+    title: "iPhone 12",
+  },
+  {
+    count: 7,
+    description: "iPhone 12mini",
+    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
+    price: 1550,
+    title: "iPhone 12mini",
+  },
+  {
+    count: 8,
+    description: "iPhone 12pro",
+    id: "7567ec4b-b10c-48c5-9345-fc73348a80a1",
+    price: 1600,
+    title: "iPhone 12pro",
+  },
+  {
+    count: 2,
+    description: "iPhone 5s",
+    id: "7567ec4b-b10c-48c5-9445-fc73c48a80a2",
+    price: 200,
+    title: "iPhone 5s",
+  },
+  {
+    count: 3,
+    description: "iPhone 8",
+    id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
+    price: 100,
+    title: "iPhone 4s",
+  },
+]

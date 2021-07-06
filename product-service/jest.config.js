@@ -1,13 +1,14 @@
+const fs = require('fs')
+const path = require('path')
+
+const root = fs.realpathSync(process.cwd())
+const src = path.resolve(root, 'src')
+
 module.exports = {
-    preset: 'ts-jest',
     testEnvironment: 'node',
-    coverageThreshold: {
-      global: {
-        statements: 50,
-        branches: 90,
-        functions: 0,
-        lines: 0,
-      },
-    },
-    setupFiles: ['./jest.setup-file.ts'],
+    setupFiles: ['./jest.setup-file.js'],
+    moduleNameMapper: {
+      '@functions/(.*)$': path.resolve(src, 'functions/$1'),
+      '@libs/(.*)$': path.resolve(src, 'libs/$1'),
+    }
   }

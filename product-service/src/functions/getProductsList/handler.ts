@@ -6,7 +6,6 @@ import { mockProductList } from "../mockProductList.js"
 import schema from "./schema"
 
 const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
-    console.log(`JSON.stringify(event)`, JSON.stringify(event))
     return formatJSONResponse(mockProductList)
   }
 

@@ -1,0 +1,62 @@
+documentation:
+  models:
+    - name: ProductsListResponse
+      description: This is a products list response
+      contentType: application/json
+      schema: ${file(src/schemas/productsList.json)}
+
+    - name: ProductResponse
+      description: This is a product response
+      contentType: application/json
+      schema: ${file(src/schemas/product.json)}
+
+    - name: ErrorResponse
+      description: This is a error response
+      contentType: application/json
+      schema: ${file(src/schemas/error.json)}
+
+endpoints:
+  getProductsList:
+    summary: Get products list
+    description: Get products list from data base
+    methodResponses:
+      - statusCode: 200
+        responseBody:
+          description: "A product object"
+        responseModels:
+          application/json: "ProductsListResponse"
+      - statusCode: 404
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"
+      - statusCode: 500
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"
+
+  getProductById:
+    summary: Get product
+    description: Get product from data base by id
+    pathParams:
+      - name: "id"
+        description: "The identified of the particular product"
+        schema:
+          type: "string"
+    methodResponses:
+      - statusCode: 200
+        responseBody:
+          description: "A product object"
+        responseModels:
+          application/json: "ProductResponse"
+      - statusCode: 404
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"
+      - statusCode: 500
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"

@@ -1,0 +1,115 @@
+openapi: 3.0.0
+components:
+  schemas:
+    ProductsListResponse:
+      title: Products List
+      type: array
+      default: []
+      items:
+        title: Items
+        type: object
+        required:
+          - count
+          - description
+          - id
+          - price
+          - title
+        properties:
+          count:
+            title: Count
+            type: integer
+          description:
+            title: Description
+            type: string
+          id:
+            title: Id
+            type: string
+          price:
+            title: Price
+            type: integer
+          title:
+            title: Title
+            type: string
+    ProductResponse:
+      title: Product
+      type: object
+      required:
+        - count
+        - description
+        - id
+        - price
+        - title
+      properties:
+        count:
+          title: Count
+          type: integer
+        description:
+          title: Description
+          type: string
+        id:
+          title: Id
+          type: string
+        price:
+          title: Price
+          type: integer
+        title:
+          title: Title
+          type: string
+    ErrorResponse:
+      title: Error
+      type: object
+      default: null
+  securitySchemes: {}
+info:
+  title: ''
+  description: ''
+  version: 13ef3dde-a3e6-4dbc-b57b-3dc8e52f4221
+paths:
+  /products:
+    get:
+      operationId: getProductsList
+      summary: Get products list
+      description: Get products list from data base
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsListResponse'
+        '404':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/products/{id}':
+    get:
+      operationId: getProductById
+      summary: Get product
+      description: Get product from data base by id
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

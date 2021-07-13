@@ -1,12 +1,17 @@
 service: product-service
 frameworkVersion: "2"
+
+plugins:
+  - serverless-webpack
+  - serverless-openapi-documentation
+
 custom:
   webpack:
     packager: yarn
     webpackConfig: webpack.config.js
     includeModules: true
-plugins:
-  - serverless-webpack
+  documentation: ${file(serverless.doc.yml):documentation}
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -27,7 +32,8 @@ functions:
           method: get
           path: products
           cors:
-            origin: '*'
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.getProductsList}
 
   getProductById:
     handler: src/functions/index.getProductById
@@ -36,5 +42,5 @@ functions:
           method: get
           path: products/{id}
           cors:
-            origin: '*'
-
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.getProductById}

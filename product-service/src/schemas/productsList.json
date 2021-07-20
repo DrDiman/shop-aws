@@ -1,0 +1,33 @@
+{
+  "definitions": {},
+  "title": "Products List",
+  "type": "array",
+  "default": [],
+  "items": {
+    "title": "Items",
+    "type": "object",
+    "required": ["count", "description", "id", "price", "title"],
+    "properties": {
+      "count": {
+        "title": "Count",
+        "type": "integer"
+      },
+      "description": {
+        "title": "Description",
+        "type": "string"
+      },
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "price": {
+        "title": "Price",
+        "type": "integer"
+      },
+      "title": {
+        "title": "Title",
+        "type": "string"
+      }
+    }
+  }
+}

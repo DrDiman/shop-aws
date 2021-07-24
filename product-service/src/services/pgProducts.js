@@ -68,9 +68,9 @@ class PgProductsClient {
 
       const qInsertProduct = new QueryConfig(
         `INSERT INTO products(title, description, price)
-        VALUES
-        ('${product.title}', '${product.description}', ${product.price})
-        RETURNING id;`
+          VALUES
+          ('${product.title}', '${product.description}', ${product.price})
+          RETURNING id;`
       )
 
       const {
@@ -79,18 +79,18 @@ class PgProductsClient {
 
       const qInsertCount = new QueryConfig(
         `INSERT INTO stocks(id, count)
-        VALUES
-        ('${id}', ${product.count});`
+          VALUES
+          ('${id}', ${product.count});`
       )
 
       await this.#client.query(qInsertCount)
 
       const qSelectProduct = new QueryConfig(
         `SELECT p.id, p.title, p.description, p.price, s.count
-        FROM ${this.productsTableName} p
-        LEFT JOIN ${this.stocksTableName} s
-        ON s.id = p.id
-        WHERE p.id = '${id}';`
+          FROM ${this.productsTableName} p
+          LEFT JOIN ${this.stocksTableName} s
+          ON s.id = p.id
+          WHERE p.id = '${id}';`
       )
 
       const response = await this.#client.query(qSelectProduct)
@@ -113,9 +113,9 @@ class PgProductsClient {
 
       const qUpdateProduct = new QueryConfig(
         `UPDATE products p
-      SET title = '${product.title}', description = '${product.description}', price=${product.price}
-      WHERE p.id = '${productId}'
-      RETURNING p.id;`
+          SET title = '${product.title}', description = '${product.description}', price=${product.price}
+          WHERE p.id = '${productId}'
+          RETURNING p.id;`
       )
 
       const {
@@ -124,18 +124,18 @@ class PgProductsClient {
 
       const qUpdateCount = new QueryConfig(
         `UPDATE stocks s
-      SET count = ${product.count}
-      WHERE s.id = '${id}';`
+          SET count = ${product.count}
+          WHERE s.id = '${id}';`
       )
 
       await this.#client.query(qUpdateCount)
 
       const qSelectProduct = new QueryConfig(
         `SELECT p.id, p.title, p.description, p.price, s.count
-      FROM ${this.productsTableName} p
-      LEFT JOIN ${this.stocksTableName} s
-      ON s.id = p.id
-      WHERE p.id = '${id}';`
+          FROM ${this.productsTableName} p
+          LEFT JOIN ${this.stocksTableName} s
+          ON s.id = p.id
+          WHERE p.id = '${id}';`
       )
 
       const response = await this.#client.query(qSelectProduct)

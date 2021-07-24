@@ -150,6 +150,18 @@ class PgProductsClient {
       throw error
     }
   }
+
+  deleteById = async (productId) => {
+    const qDeleteProduct = new QueryConfig(
+      `DELETE FROM ${this.productsTableName} p
+        WHERE p.id = '${productId}'
+        RETURNING *;`
+    )
+
+    const response = await this.#client.query(qDeleteProduct)
+
+    return response.rows[0]
+  }
 }
 
 const pgProducts = new PgProductsClient()

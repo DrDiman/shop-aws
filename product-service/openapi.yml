@@ -62,7 +62,7 @@ components:
 info:
   title: ''
   description: ''
-  version: a0d7f507-106e-48eb-b64c-62fb3b13b3af
+  version: fee165b3-c0d4-487a-b4d6-55d572862040
 paths:
   /products:
     get:
@@ -110,6 +110,23 @@ paths:
       operationId: getProductById
       summary: Get product
       description: Get product from data base by id
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '500':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteProduct
+      summary: Delete product
+      description: Delete product or update product by id
       responses:
         '200':
           description: A product object

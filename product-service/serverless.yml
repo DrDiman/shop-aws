@@ -59,3 +59,13 @@ functions:
           cors:
             origin: "*"
           documentation: ${file(serverless.doc.yml):endpoints.putProduct}
+
+  deleteProduct:
+    handler: src/functions/index.deleteProduct
+    events:
+      - http:
+          method: delete
+          path: products/{id}
+          cors:
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.deleteProduct}

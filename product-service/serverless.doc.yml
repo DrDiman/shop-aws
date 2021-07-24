@@ -75,3 +75,22 @@ endpoints:
         responseModels:
           application/json: "ErrorResponse"
 
+  deleteProduct:
+    summary: Delete product
+    description: Delete product or update product by id
+    pathParams:
+      - name: "id"
+        description: "The identified of the particular product"
+        schema:
+          type: "string"
+    methodResponses:
+      - statusCode: 200
+        responseBody:
+          description: "A product object"
+        responseModels:
+          application/json: "ProductResponse"
+      - statusCode: 500
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"

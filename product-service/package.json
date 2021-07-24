@@ -5,13 +5,16 @@
   "author": "Dzmitry Astraukh (https://github.com/DrDiman)",
   "license": "MIT",
   "scripts": {
-    "deploy": "sls deploy",
+    "deploy": "sls deploy --stage dev",
     "test": "jest --coverage",
-    "swagger": "sls openapi generate"
+    "swagger": "sls openapi generate",
+    "i": "sls invoke -f"
   },
   "dependencies": {
     "@middy/core": "^2.4.3",
-    "@middy/http-json-body-parser": "^2.4.3"
+    "@middy/http-json-body-parser": "^2.4.3",
+    "pg": "^8.6.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

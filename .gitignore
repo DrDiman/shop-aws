@@ -4,3 +4,5 @@ jspm_packages
 .webpack
 coverage
 credantionals.txt
+env.yml
+*.env.*

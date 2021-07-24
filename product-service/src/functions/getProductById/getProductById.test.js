@@ -1,5 +1,5 @@
 import { getProductById } from "./getProductById"
-import { formatJSONResponse } from "@libs/apiGateway"
+import { successResponse, errorResponse } from "@libs/apiGateway"
 import { getMockProductList } from "@functions/getMockProductList.js"
 
 const mockList = [
@@ -16,7 +16,7 @@ jest.mock("@libs/middleware", () => ({
 }))
 
 jest.mock("@libs/apiGateway", () => ({
-  formatJSONResponse: jest.fn((obj) => obj),
+  successResponse: jest.fn((obj) => obj),
 }))
 
 describe("getProductById", () => {
@@ -38,7 +38,7 @@ describe("getProductById", () => {
 
   it("should call formatJSONResponse once with correct value in case of existing product", async () => {
     await getProductById(mockEvent)
-    expect(formatJSONResponse).nthCalledWith(1, firstProduct, 200)
+    expect(successResponse).nthCalledWith(1, firstProduct, 200)
   })
 
   it("should call formatJSONResponse once with correct value in case of not existed product", async () => {

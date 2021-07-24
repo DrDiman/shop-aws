@@ -1,17 +1,21 @@
-import { formatJSONResponse } from "@libs/apiGateway"
+import { errorResponse, successResponse } from "@libs/apiGateway"
 import { middyfy } from "@libs/middleware"
-import { getMockProductList } from "@functions/getMockProductList.js"
+import { pgProducts } from "@services/pgProducts"
 
 const handler = async (event) => {
   try {
+    console.log(`LOG event`, event)
+
     const { id } = event.pathParameters
-    const mockDbResponse = await getMockProductList()
-    const product = mockDbResponse.find((p) => p.id === id)
-    return product
-      ? formatJSONResponse(product, 200)
-      : formatJSONResponse(null, 404)
+
+    const product = await pgProducts.getById(id)
+
+    console.log('LOG get product by id db response', product)
+
+    return successResponse(product)
   } catch (error) {
-    return formatJSONResponse(null, 500)
+    console.log('LOG error in getProductById', error)
+    return errorResponse()
   }
 }
 

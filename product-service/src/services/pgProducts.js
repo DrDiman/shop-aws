@@ -62,67 +62,93 @@ class PgProductsClient {
   }
 
   put = async (product) => {
-    const qInsertProduct = new QueryConfig(
-      `INSERT INTO products(title, description, price)
+    try {
+      const qTransactionBegin = new QueryConfig("BEGIN")
+      await this.#client.query(qTransactionBegin)
+
+      const qInsertProduct = new QueryConfig(
+        `INSERT INTO products(title, description, price)
         VALUES
         ('${product.title}', '${product.description}', ${product.price})
         RETURNING id;`
-    )
+      )
 
-    const {
-      rows: [{ id }],
-    } = await this.#client.query(qInsertProduct)
+      const {
+        rows: [{ id }],
+      } = await this.#client.query(qInsertProduct)
 
-    const qInsertCount = new QueryConfig(
-      `INSERT INTO stocks(id, count)
+      const qInsertCount = new QueryConfig(
+        `INSERT INTO stocks(id, count)
         VALUES
         ('${id}', ${product.count});`
-    )
+      )
 
-    await this.#client.query(qInsertCount)
+      await this.#client.query(qInsertCount)
 
-    const qSelectProduct = new QueryConfig(
-      `SELECT p.id, p.title, p.description, p.price, s.count
+      const qSelectProduct = new QueryConfig(
+        `SELECT p.id, p.title, p.description, p.price, s.count
         FROM ${this.productsTableName} p
         LEFT JOIN ${this.stocksTableName} s
         ON s.id = p.id
         WHERE p.id = '${id}';`
-    )
+      )
 
-    const response = await this.#client.query(qSelectProduct)
-    return response.rows[0]
+      const response = await this.#client.query(qSelectProduct)
+
+      const qTransactionCommit = new QueryConfig("COMMIT")
+      await this.#client.query(qTransactionCommit)
+
+      return response.rows[0]
+    } catch (error) {
+      const qTransactionRollback = new QueryConfig("ROLLBACK")
+      await this.#client.query(qTransactionRollback)
+      throw error
+    }
   }
 
   updateById = async (product, productId) => {
-    const qUpdateProduct = new QueryConfig(
-      `UPDATE products p
-        SET title = '${product.title}', description = '${product.description}', price=${product.price}
-        WHERE p.id = '${productId}'
-        RETURNING p.id;`
-    )
+    try {
+      const qTransactionBegin = new QueryConfig("BEGIN")
+      await this.#client.query(qTransactionBegin)
 
-    const {
-      rows: [{ id }],
-    } = await this.#client.query(qUpdateProduct)
+      const qUpdateProduct = new QueryConfig(
+        `UPDATE products p
+      SET title = '${product.title}', description = '${product.description}', price=${product.price}
+      WHERE p.id = '${productId}'
+      RETURNING p.id;`
+      )
 
-    const qUpdateCount = new QueryConfig(
-      `UPDATE stocks s
-        SET count = ${product.count}
-        WHERE s.id = '${id}';`
-    )
+      const {
+        rows: [{ id }],
+      } = await this.#client.query(qUpdateProduct)
 
-    await this.#client.query(qUpdateCount)
+      const qUpdateCount = new QueryConfig(
+        `UPDATE stocks s
+      SET count = ${product.count}
+      WHERE s.id = '${id}';`
+      )
 
-    const qSelectProduct = new QueryConfig(
-      `SELECT p.id, p.title, p.description, p.price, s.count
-        FROM ${this.productsTableName} p
-        LEFT JOIN ${this.stocksTableName} s
-        ON s.id = p.id
-        WHERE p.id = '${id}';`
-    )
+      await this.#client.query(qUpdateCount)
 
-    const response = await this.#client.query(qSelectProduct)
-    return response.rows[0]
+      const qSelectProduct = new QueryConfig(
+        `SELECT p.id, p.title, p.description, p.price, s.count
+      FROM ${this.productsTableName} p
+      LEFT JOIN ${this.stocksTableName} s
+      ON s.id = p.id
+      WHERE p.id = '${id}';`
+      )
+
+      const response = await this.#client.query(qSelectProduct)
+
+      const qTransactionCommit = new QueryConfig("COMMIT")
+      await this.#client.query(qTransactionCommit)
+
+      return response.rows[0]
+    } catch (error) {
+      const qTransactionRollback = new QueryConfig("ROLLBACK")
+      await this.#client.query(qTransactionRollback)
+      throw error
+    }
   }
 }
 

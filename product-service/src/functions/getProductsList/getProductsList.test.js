@@ -1,22 +1,34 @@
 import { getProductsList } from "./getProductsList"
-import { formatJSONResponse } from "@libs/apiGateway"
-import { getMockProductList } from "@functions/getMockProductList.js"
+import { successResponse, errorResponse } from "@libs/apiGateway"
+import { Product } from "@models/Product"
+import { pgProducts } from "@services/pgProducts"
 
-const mockList = [
-  { id: "1", name: "iphone 8" },
-  { id: "2", name: "iphone 12" },
-]
+const mockProduct = new Product({
+  id: "1",
+  title: "iphone 8",
+  description: "iPone 8",
+  count: 42,
+  price: 200,
+})
 
-jest.mock("@functions/getMockProductList.js", () => ({
-  getMockProductList: jest.fn(() => Promise.resolve(mockList)),
+const mockList = [mockProduct]
+
+const mockError = new Error("mock error")
+
+jest.mock("@services/pgProducts", () => ({
+  pgProducts: {
+    getAll: jest.fn(() => Promise.resolve(mockList)),
+  },
 }))
+
 
 jest.mock("@libs/middleware", () => ({
   middyfy: jest.fn((fn) => fn),
 }))
 
 jest.mock("@libs/apiGateway", () => ({
-  formatJSONResponse: jest.fn((obj) => obj),
+  successResponse: jest.fn((obj) => obj),
+  errorResponse: jest.fn((err) => err),
 }))
 
 describe("getProductsList", () => {
@@ -24,20 +36,15 @@ describe("getProductsList", () => {
     jest.clearAllMocks()
   })
 
-  it("should return correct products list", async () => {
-    const productList = await getProductsList()
-    expect(productList).toEqual(mockList)
-  })
-
-  it("should call formatJSONResponse once with correct value", async () => {
+  it("should call successResponse once with correct value", async () => {
     await getProductsList()
-    expect(formatJSONResponse).nthCalledWith(1, mockList, 200)
+    expect(successResponse).nthCalledWith(1, mockList)
   })
 
-  it("should call formatJSONResponse once with correct value in case of error of getting list of products", async () => {
+  it("should call errorResponse once with correct value in case of error of getting list of products", async () => {
     const mockError = new Error("Something went wrong")
-    getMockProductList.mockImplementationOnce(() => Promise.reject(mockError))
+    pgProducts.getAll.mockImplementationOnce(() => Promise.reject(mockError))
     await getProductsList()
-    expect(formatJSONResponse).nthCalledWith(1, null, 500)
+    expect(errorResponse).nthCalledWith(1)
   })
 })

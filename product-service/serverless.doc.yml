@@ -25,11 +25,6 @@ endpoints:
           description: "A product object"
         responseModels:
           application/json: "ProductsListResponse"
-      - statusCode: 404
-        responseBody:
-          description: "An error object"
-        responseModels:
-          application/json: "ErrorResponse"
       - statusCode: 500
         responseBody:
           description: "An error object"
@@ -50,13 +45,33 @@ endpoints:
           description: "A product object"
         responseModels:
           application/json: "ProductResponse"
-      - statusCode: 404
-        responseBody:
-          description: "An error object"
-        responseModels:
-          application/json: "ErrorResponse"
       - statusCode: 500
         responseBody:
           description: "An error object"
         responseModels:
           application/json: "ErrorResponse"
+
+  putProduct:
+    summary: Put product
+    description: Put product or update product by id
+    requestBody:
+      description: "A product to put"
+    requestModels:
+      application/json: "ProductResponse"
+    methodResponses:
+      - statusCode: 200
+        responseBody:
+          description: "A product object"
+        responseModels:
+          application/json: "ProductResponse"
+      - statusCode: 500
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"
+      - statusCode: 400
+        responseBody:
+          description: "Bad request"
+        responseModels:
+          application/json: "ErrorResponse"
+

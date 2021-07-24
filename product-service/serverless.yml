@@ -58,3 +58,4 @@ functions:
           path: products
           cors:
             origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.putProduct}

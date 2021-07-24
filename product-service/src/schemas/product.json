@@ -2,7 +2,7 @@
   "definitions": {},
   "title": "Product",
   "type": "object",
-  "required": ["count", "description", "id", "price", "title"],
+  "required": ["count", "description", "price", "title"],
   "properties": {
     "count": {
       "title": "Count",

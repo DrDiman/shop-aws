@@ -36,7 +36,4 @@ module.exports = {
       "@services": path.resolve("./src/services"),
     },
   },
-  experiments: {
-    topLevelAwait: true,
-  },
 }

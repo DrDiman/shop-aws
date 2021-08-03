@@ -45,6 +45,11 @@ endpoints:
           description: "A product object"
         responseModels:
           application/json: "ProductResponse"
+      - statusCode: 404
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"
       - statusCode: 500
         responseBody:
           description: "An error object"

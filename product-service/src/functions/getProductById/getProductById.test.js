@@ -2,6 +2,7 @@ import { getProductById } from "./getProductById"
 import { successResponse, errorResponse } from "@libs/apiGateway"
 import { Product } from "@models/Product"
 import { pgProducts } from "@services/pgProducts"
+import { StatusCode } from "@enums/StatusCode"
 
 const mockProduct = new Product({
   id: "1",
@@ -56,13 +57,14 @@ describe("getProductById", () => {
   })
 
   it("should call errorResponse once with correct value in case of not existed product", async () => {
+    pgProducts.getById.mockImplementationOnce(() => null)
     const mockEvent = {
       pathParameters: {
         id: "blah",
       },
     }
     await getProductById(mockEvent)
-    expect(errorResponse).nthCalledWith(1)
+    expect(errorResponse).nthCalledWith(1, StatusCode.NOT_FOUND)
   })
 
   it("should call errorResponse once with correct value in case of error of getting list of products", async () => {

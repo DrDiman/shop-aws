@@ -62,7 +62,7 @@ components:
 info:
   title: ''
   description: ''
-  version: fee165b3-c0d4-487a-b4d6-55d572862040
+  version: c6f20648-57a3-4155-acbf-114a2c752bb0
 paths:
   /products:
     get:
@@ -117,6 +117,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: An error object
           content:

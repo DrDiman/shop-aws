@@ -1,26 +1,22 @@
-import { getProductsList } from "./getProductsList"
+import { v4 as uuidv4 } from "uuid"
+import { deleteProduct } from "./deleteProduct"
 import { successResponse, errorResponse } from "@libs/apiGateway"
 import { Product } from "@models/Product"
 import { pgProducts } from "@services/pgProducts"
 
 const mockProduct = new Product({
-  id: "1",
+  id: uuidv4(),
   title: "iphone 8",
   description: "iPone 8",
   count: 42,
   price: 200,
 })
 
-const mockList = [mockProduct]
-
-const mockError = new Error("mock error")
-
 jest.mock("@services/pgProducts", () => ({
   pgProducts: {
-    getAll: jest.fn(() => Promise.resolve(mockList)),
+    deleteById: jest.fn(() => Promise.resolve(mockProduct)),
   },
 }))
-
 
 jest.mock("@libs/middleware", () => ({
   middyfy: jest.fn((fn) => fn),
@@ -31,20 +27,33 @@ jest.mock("@libs/apiGateway", () => ({
   errorResponse: jest.fn((err) => err),
 }))
 
-describe("getProductsList", () => {
+describe("deleteProduct", () => {
+  const mockEvent = {
+    pathParameters: {
+      id: mockProduct.id,
+    },
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it("should call successResponse once with correct value", async () => {
-    await getProductsList()
-    expect(successResponse).nthCalledWith(1, mockList)
+  it("should call pgProducts.deleteById once with correct argument", async () => {
+    const product = await deleteProduct(mockEvent)
+    expect(pgProducts.deleteById).nthCalledWith(1, mockEvent.pathParameters.id)
+  })
+
+  it("should call successResponse once with correct value in case of existing product", async () => {
+    await deleteProduct(mockEvent)
+    expect(successResponse).nthCalledWith(1, mockProduct)
   })
 
   it("should call errorResponse once with correct value in case of error of getting list of products", async () => {
     const mockError = new Error("Something went wrong")
-    pgProducts.getAll.mockImplementationOnce(() => Promise.reject(mockError))
-    await getProductsList()
+    pgProducts.deleteById.mockImplementationOnce(() =>
+      Promise.reject(mockError)
+    )
+    await deleteProduct(mockEvent)
     expect(errorResponse).nthCalledWith(1)
   })
 })

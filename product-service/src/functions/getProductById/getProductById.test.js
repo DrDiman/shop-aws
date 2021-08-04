@@ -1,14 +1,29 @@
 import { getProductById } from "./getProductById"
-import { formatJSONResponse } from "@libs/apiGateway"
-import { getMockProductList } from "@functions/getMockProductList.js"
+import { successResponse, errorResponse } from "@libs/apiGateway"
+import { Product } from "@models/Product"
+import { pgProducts } from "@services/pgProducts"
+import { StatusCode } from "@enums/StatusCode"
 
-const mockList = [
-  { id: "1", name: "iphone 8" },
-  { id: "2", name: "iphone 12" },
-]
+const mockProduct = new Product({
+  id: "1",
+  title: "iphone 8",
+  description: "iPone 8",
+  count: 42,
+  price: 200,
+})
 
-jest.mock("@functions/getMockProductList.js", () => ({
-  getMockProductList: jest.fn(() => Promise.resolve(mockList)),
+const mockList = [mockProduct]
+
+const mockError = new Error("mock error")
+
+jest.mock("@services/pgProducts", () => ({
+  pgProducts: {
+    getById: jest.fn((id) =>
+      mockList.find((p) => p.id === id)
+        ? Promise.resolve(mockProduct)
+        : Promise.reject(mockError)
+    ),
+  },
 }))
 
 jest.mock("@libs/middleware", () => ({
@@ -16,14 +31,14 @@ jest.mock("@libs/middleware", () => ({
 }))
 
 jest.mock("@libs/apiGateway", () => ({
-  formatJSONResponse: jest.fn((obj) => obj),
+  successResponse: jest.fn((obj) => obj),
+  errorResponse: jest.fn((err) => err),
 }))
 
 describe("getProductById", () => {
-  const [firstProduct] = mockList
   const mockEvent = {
     pathParameters: {
-      id: firstProduct.id,
+      id: mockProduct.id,
     },
   }
 
@@ -31,30 +46,31 @@ describe("getProductById", () => {
     jest.clearAllMocks()
   })
 
-  it("should return correct product", async () => {
+  it("should call pgProducts.getById once with correct argument", async () => {
     const product = await getProductById(mockEvent)
-    expect(product).toEqual(firstProduct)
+    expect(pgProducts.getById).nthCalledWith(1, mockEvent.pathParameters.id)
   })
 
-  it("should call formatJSONResponse once with correct value in case of existing product", async () => {
+  it("should call successResponse once with correct value in case of existing product", async () => {
     await getProductById(mockEvent)
-    expect(formatJSONResponse).nthCalledWith(1, firstProduct, 200)
+    expect(successResponse).nthCalledWith(1, mockProduct)
   })
 
-  it("should call formatJSONResponse once with correct value in case of not existed product", async () => {
+  it("should call errorResponse once with correct value in case of not existed product", async () => {
+    pgProducts.getById.mockImplementationOnce(() => null)
     const mockEvent = {
       pathParameters: {
         id: "blah",
       },
     }
     await getProductById(mockEvent)
-    expect(formatJSONResponse).nthCalledWith(1, null, 404)
+    expect(errorResponse).nthCalledWith(1, StatusCode.NOT_FOUND)
   })
 
-  it("should call formatJSONResponse once with correct value in case of error of getting list of products", async () => {
+  it("should call errorResponse once with correct value in case of error of getting list of products", async () => {
     const mockError = new Error("Something went wrong")
-    getMockProductList.mockImplementationOnce(() => Promise.reject(mockError))
+    pgProducts.getById.mockImplementationOnce(() => Promise.reject(mockError))
     await getProductById(mockEvent)
-    expect(formatJSONResponse).nthCalledWith(1, null, 500)
+    expect(errorResponse).nthCalledWith(1)
   })
 })

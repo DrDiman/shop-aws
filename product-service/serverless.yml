@@ -15,14 +15,19 @@ custom:
 provider:
   name: aws
   runtime: nodejs14.x
-  region: eu-west-1
-  stage: dev
+  region: ${file(env.yml):provider.REGION}
+  stage: ${file(env.yml):provider.STAGE}
   lambdaHashingVersion: 20201221
   apiGateway:
     minimumCompressionSize: 1024
     shouldStartNameWithService: true
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    PG_HOST: ${file(env.yml):pg.HOST}
+    PG_PORT: ${file(env.yml):pg.PORT}
+    PG_DATABASE: ${file(env.yml):pg.DATABASE}
+    PG_USER: ${file(env.yml):pg.USER}
+    PG_PASSWORD: ${file(env.yml):pg.PASSWORD}
 
 functions:
   getProductsList:
@@ -44,3 +49,23 @@ functions:
           cors:
             origin: "*"
           documentation: ${file(serverless.doc.yml):endpoints.getProductById}
+
+  putProduct:
+    handler: src/functions/index.putProduct
+    events:
+      - http:
+          method: put
+          path: products
+          cors:
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.putProduct}
+
+  deleteProduct:
+    handler: src/functions/index.deleteProduct
+    events:
+      - http:
+          method: delete
+          path: products/{id}
+          cors:
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.deleteProduct}

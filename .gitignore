@@ -3,3 +3,6 @@ jspm_packages
 .serverless
 .webpack
 coverage
+credantionals.txt
+env.yml
+*.env.*

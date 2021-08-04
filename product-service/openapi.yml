@@ -36,7 +36,6 @@ components:
       required:
         - count
         - description
-        - id
         - price
         - title
       properties:
@@ -63,7 +62,7 @@ components:
 info:
   title: ''
   description: ''
-  version: 13ef3dde-a3e6-4dbc-b57b-3dc8e52f4221
+  version: c6f20648-57a3-4155-acbf-114a2c752bb0
 paths:
   /products:
     get:
@@ -77,8 +76,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductsListResponse'
-        '404':
+        '500':
           description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: putProduct
+      summary: Put product
+      description: Put product or update product by id
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Bad request
           content:
             application/json:
               schema:
@@ -107,6 +123,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteProduct
+      summary: Delete product
+      description: Delete product or update product by id
+      responses:
+        '200':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
         '500':
           description: An error object
           content:

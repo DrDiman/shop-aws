@@ -6,15 +6,17 @@ const handler = async (event) => {
   try {
     console.log(`LOG event`, event)
 
-    const products = await pgProducts.getAll()
+    const { id } = event.pathParameters
 
-    console.log('LOG get all products db response', products)
+    const dbProduct = await pgProducts.deleteById(id)
 
-    return successResponse(products)
+    console.log("LOG put product db response", dbProduct)
+
+    return successResponse(dbProduct)
   } catch (error) {
-    console.log('LOG error in getProductsList', error)
+    console.log("LOG error deleteProduct", error)
     return errorResponse()
   }
 }
 
-export const getProductsList = middyfy(handler)
+export const deleteProduct = middyfy(handler)

@@ -29,8 +29,11 @@ module.exports = {
   resolve: {
     modules: [path.resolve(__dirname, "src"), "node_modules"],
     alias: {
+      "@enums": path.resolve("./src/enums"),
       "@functions": path.resolve("./src/functions"),
       "@libs": path.resolve("./src/libs"),
+      "@models": path.resolve("./src/models"),
+      "@services": path.resolve("./src/services"),
     },
   },
 }

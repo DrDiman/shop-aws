@@ -1,0 +1,31 @@
+{
+  "name": "import-service",
+  "version": "1.0.0",
+  "description": "import service for AWS shop",
+  "author": "Dzmitry Astraukh (https://github.com/DrDiman)",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "sls deploy --stage dev",
+    "test": "jest --coverage",
+    "swagger": "sls openapi generate",
+    "i": "sls invoke -f"
+  },
+  "dependencies": {
+    "@middy/core": "^2.4.3",
+    "@middy/http-json-body-parser": "^2.4.3",
+    "aws-sdk": "^2.953.0",
+    "csv-parser": "^3.0.0",
+    "uuid": "^8.3.2",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "babel-loader": "^8.2.2",
+    "jest": "^27.0.6",
+    "serverless-openapi-documentation": "^0.4.0",
+    "serverless-webpack": "^5.5.1",
+    "webpack": "^5.42.1",
+    "webpack-node-externals": "^3.0.0"
+  }
+}

@@ -1,0 +1,6 @@
+{
+	"definitions": {},
+	"title": "Signed Url",
+	"type": "string",
+	"default": ""
+}

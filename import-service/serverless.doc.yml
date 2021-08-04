@@ -1,0 +1,32 @@
+documentation:
+  models:
+    - name: ErrorResponse
+      description: This is a error response
+      contentType: application/json
+      schema: ${file(src/schemas/error.json)}
+    - name: SignedUrl
+      description: This is a signed url response
+      contentType: application/json
+      schema: ${file(src/schemas/signedUrl.json)}
+
+endpoints:
+  importProductsFile:
+    summary: Get signed url to upload file
+    description: Get signed url to upload file
+    queryParams:
+      - name: "name"
+        description: "The name of the file"
+        required: true
+        schema:
+          type: "string"
+    methodResponses:
+      - statusCode: 200
+        responseBody:
+          description: "A signed url string to upload file"
+        responseModels:
+          application/json: "SignedUrl"
+      - statusCode: 500
+        responseBody:
+          description: "An error object"
+        responseModels:
+          application/json: "ErrorResponse"

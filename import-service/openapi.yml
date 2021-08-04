@@ -1,0 +1,35 @@
+openapi: 3.0.0
+components:
+  schemas:
+    ErrorResponse:
+      title: Error
+      type: object
+      default: null
+    SignedUrl:
+      title: Signed Url
+      type: string
+      default: ''
+  securitySchemes: {}
+info:
+  title: ''
+  description: ''
+  version: 97c853c1-305e-4725-a3e2-bb930dd6fef5
+paths:
+  /import:
+    get:
+      operationId: importProductsFile
+      summary: Get signed url to upload file
+      description: Get signed url to upload file
+      responses:
+        '200':
+          description: A signed url string to upload file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedUrl'
+        '500':
+          description: An error object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

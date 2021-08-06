@@ -52,7 +52,8 @@ class PgProductsClient {
       `SELECT p.id, p.title, p.description, p.price, s.count
         FROM ${this.productsTableName} p
         LEFT JOIN ${this.stocksTableName} s
-        ON s.id = p.id;
+        ON s.id = p.id
+        ORDER BY p.title ASC;
         `
     )
 
@@ -143,6 +144,46 @@ class PgProductsClient {
 
   updateById = (product, productId) =>
     this.#transactionRequest(product, productId)(this.#updateById)(this.#pool)
+
+  #insertAll = async (client, products) => {
+    const values = products
+      .map((p) => `('${p.title}', '${p.description}', ${p.price})`)
+      .join(", ")
+
+    const qInsertProduct = new QueryConfig(
+      `INSERT INTO products(title, description, price)
+        VALUES ${values}
+        RETURNING *;`
+    )
+
+    const { rows } = await client.query(qInsertProduct)
+
+    const qInsertCount = new QueryConfig(
+      `INSERT INTO stocks(id, count)
+        VALUES
+        ${rows
+          .map(({ id }, i) => `('${id}', ${products[i]["count"]})`)
+          .join(", ")};`
+    )
+
+    await client.query(qInsertCount)
+
+    const qSelectProduct = new QueryConfig(
+      `SELECT p.id, p.title, p.description, p.price, s.count
+        FROM ${this.productsTableName} p
+        LEFT JOIN ${this.stocksTableName} s
+        ON s.id = p.id
+        WHERE p.id IN (${rows.map(({ id }) => `'${id}'`).join(", ")});
+        `
+    )
+
+    const response = await client.query(qSelectProduct)
+
+    return response.rows
+  }
+
+  insertAll = (products) =>
+    this.#transactionRequest(products)(this.#insertAll)(this.#pool)
 
   deleteById = async (productId) => {
     const qDeleteProduct = new QueryConfig(

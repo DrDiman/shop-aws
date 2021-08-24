@@ -1,0 +1,62 @@
+service: import-service
+frameworkVersion: "2"
+
+plugins:
+  - serverless-webpack
+  - serverless-openapi-documentation
+
+custom:
+  webpack:
+    packager: yarn
+    webpackConfig: webpack.config.js
+    includeModules: true
+
+  s3bucketName: shop-uploaded-files
+  documentation: ${file(serverless.doc.yml):documentation}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${file(env.yml):provider.REGION}
+  stage: ${file(env.yml):provider.STAGE}
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    S3_BUCKET_NAME: ${self:custom.s3bucketName}
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "s3:*"
+          Resource:
+            - "arn:aws:s3:::${self:custom.s3bucketName}"
+            - "arn:aws:s3:::${self:custom.s3bucketName}/*"
+            - "arn:aws:s3:::${self:custom.s3bucketName}/*/*"
+
+functions:
+  importProductsFile:
+    handler: src/functions/index.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          querystrings:
+            name: string
+          cors:
+            origin: "*"
+          documentation: ${file(serverless.doc.yml):endpoints.importProductsFile}
+
+  importFileParser:
+    handler: src/functions/index.importFileParser
+    events:
+      - s3:
+          bucket: ${self:custom.s3bucketName}
+          existing: true
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+            - suffix: .csv

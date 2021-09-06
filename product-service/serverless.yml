@@ -12,6 +12,37 @@ custom:
     includeModules: true
   documentation: ${file(serverless.doc.yml):documentation}
 
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    primarySubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: d.astraukh@gmail.com
+        TopicArn: !Ref createProductTopic
+        Protocol: email
+        FilterPolicy:
+          title:
+            - iPhone
+            - Samsung
+    secondarySubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: dr-diman@yandex.ru
+        TopicArn: !Ref createProductTopic
+        Protocol: email
+        FilterPolicy:
+          title:
+            - nokia
+            - Sony
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -28,6 +59,20 @@ provider:
     PG_DATABASE: ${file(env.yml):pg.DATABASE}
     PG_USER: ${file(env.yml):pg.USER}
     PG_PASSWORD: ${file(env.yml):pg.PASSWORD}
+    SNS_TOPIC_ARN: !Ref createProductTopic
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "sqs:*"
+          Resource:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+        - Effect: "Allow"
+          Action: "sns:*"
+          Resource: "*"
 
 functions:
   getProductsList:
@@ -69,3 +114,13 @@ functions:
           cors:
             origin: "*"
           documentation: ${file(serverless.doc.yml):endpoints.deleteProduct}
+
+  catalogBatchProcess:
+    handler: src/functions/index.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn

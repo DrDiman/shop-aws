@@ -26,6 +26,7 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     S3_BUCKET_NAME: ${self:custom.s3bucketName}
+    SQS_ENDPOINT: ${file(env.yml):sqs.URL}
 
   iam:
     role:
@@ -36,6 +37,10 @@ provider:
             - "arn:aws:s3:::${self:custom.s3bucketName}"
             - "arn:aws:s3:::${self:custom.s3bucketName}/*"
             - "arn:aws:s3:::${self:custom.s3bucketName}/*/*"
+        - Effect: "Allow"
+          Action: "sqs:*"
+          Resource:
+            - ${file(env.yml):sqs.ARN}
 
 functions:
   importProductsFile:

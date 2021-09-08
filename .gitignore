@@ -5,4 +5,4 @@ jspm_packages
 coverage
 credantionals.txt
 env.yml
-*.env.*
+*.env*

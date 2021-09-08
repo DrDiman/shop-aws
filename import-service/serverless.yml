@@ -51,8 +51,12 @@ functions:
           path: import
           querystrings:
             name: string
-          cors:
-            origin: "*"
+          cors: true
+          authorizer:
+            arn: ${file(env.yml):auth.BASIC_AUTH_ARN}
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
           documentation: ${file(serverless.doc.yml):endpoints.importProductsFile}
 
   importFileParser:

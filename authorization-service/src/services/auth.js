@@ -12,7 +12,7 @@ class Auth {
   getCredentials = (basicAuthorizationToken) => {
     const token = Auth.getToken(basicAuthorizationToken)
     const credentials = Auth.decodeB64ToString(token)
-    const [name, password] = credentials.split("=")
+    const [name, password] = credentials.split(":")
     return [name, password]
   }
 

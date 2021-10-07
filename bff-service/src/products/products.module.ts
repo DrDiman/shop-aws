@@ -5,9 +5,7 @@ import { ProductsService } from './products.service';
 
 @Module({
   imports: [
-    CacheModule.register({
-      ttl: 120,
-    }),
+    CacheModule.register(),
   ],
   controllers: [ProductsController],
   providers: [

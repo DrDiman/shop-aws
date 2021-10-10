@@ -1,0 +1,13 @@
+.elasticbeanstalk
+.dockerignore
+.eslintrc.js
+.git
+.gitignore
+.prettierrc
+README.md
+Dockerfile
+coverage
+dist
+test
+node_modules
+**/*.spec.ts
